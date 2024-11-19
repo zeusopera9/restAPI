@@ -1,15 +1,12 @@
 package com.example.restAPI.Controller;
 
 import com.example.restAPI.Entity.Task;
-import com.example.restAPI.Enum.Status;
 import com.example.restAPI.Service.TaskService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +35,7 @@ public class TaskController {
         if(task != null) {
             return new ResponseEntity<>(task, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
 //        try {
@@ -70,7 +67,7 @@ public class TaskController {
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Task> deleteExistingTask(@PathVariable int id) {
         try {
-            return new ResponseEntity<>(taskService.deleteExistingTask(id), HttpStatus.OK);
+            return new ResponseEntity<>(taskService.deleteExistingTask(id), HttpStatus.NO_CONTENT);
         } catch(RuntimeException ex) {
             return new ResponseEntity<>(new Task(), HttpStatus.OK);
         }
@@ -79,7 +76,11 @@ public class TaskController {
     // Patch a task as completed
     @PatchMapping("/tasks/{id}")
     public ResponseEntity<Task> markTaskAsCompleted(@PathVariable int id) {
-        return new ResponseEntity<>(taskService.markTaskAsCompleted(id), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(taskService.markTaskAsCompleted(id), HttpStatus.CREATED);
+        } catch(RuntimeException ex) {
+            return new ResponseEntity<>(new Task(), HttpStatus.OK);
+        }
     }
 
 }
