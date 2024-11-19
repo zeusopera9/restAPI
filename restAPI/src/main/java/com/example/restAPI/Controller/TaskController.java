@@ -69,7 +69,7 @@ public class TaskController {
         try {
             return new ResponseEntity<>(taskService.deleteExistingTask(id), HttpStatus.NO_CONTENT);
         } catch(RuntimeException ex) {
-            return new ResponseEntity<>(new Task(), HttpStatus.OK);
+            return new ResponseEntity<>(new Task(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -77,9 +77,9 @@ public class TaskController {
     @PatchMapping("/tasks/{id}")
     public ResponseEntity<Task> markTaskAsCompleted(@PathVariable int id) {
         try {
-            return new ResponseEntity<>(taskService.markTaskAsCompleted(id), HttpStatus.CREATED);
+            return new ResponseEntity<>(taskService.markTaskAsCompleted(id), HttpStatus.OK);
         } catch(RuntimeException ex) {
-            return new ResponseEntity<>(new Task(), HttpStatus.OK);
+            return new ResponseEntity<>(new Task(), HttpStatus.NOT_FOUND);
         }
     }
 
