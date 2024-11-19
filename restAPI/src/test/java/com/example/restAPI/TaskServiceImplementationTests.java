@@ -15,11 +15,12 @@ import org.mockito.MockitoAnnotations;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TaskServiceImplementationTests {
 
@@ -37,6 +38,7 @@ public class TaskServiceImplementationTests {
 
         // Creating a sample Task for testing
         task = new Task();
+        task.setId(1);
         task.setTitle("Test Task");
         task.setDescription("Test Description");
         task.setDue_date(LocalDate.of(2024, 11, 25));
@@ -71,5 +73,20 @@ public class TaskServiceImplementationTests {
         assertNotNull(createdTask);
         assertEquals("Test Task", createdTask.getTitle());
         assertEquals(Status.pending, createdTask.getStatus());
+    }
+
+    // Test for deleting a Task
+    @Test
+    public void testDeleteExistingTask() {
+        when(taskRepository.findById(1)).thenReturn(Optional.of(task));
+        doNothing().when(taskRepository).deleteById(1);
+
+        // Act
+        Task result = taskServiceImplementation.deleteExistingTask(1);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        verify(taskRepository, times(1)).deleteById(1);
     }
 }
